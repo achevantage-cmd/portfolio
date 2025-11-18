@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>My Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #050816;
+            color: #f9fafb;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+            background: rgba(5, 8, 22, 0.9);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: #a5b4fc;
+        }
+
+        nav a {
+            margin-left: 1.5rem;
+            text-decoration: none;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover {
+            color: #a5b4fc;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        #hero {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 3vw + 1rem, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        h1 span {
+            color: #a5b4fc;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            max-width: 540px;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: transparent;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border: none;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-sub {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 700px) {
+            #hero {
+                grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+                align-items: center;
+            }
+
+            .projects-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .card {
+            border-radius: 1rem;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            background: radial-gradient(circle at top, rgba(79, 70, 229, 0.18), transparent);
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .project-link {
+            display: inline-block;
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+            color: #a5b4fc;
+            text-decoration: none;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            display: grid;
+            gap: 0.9rem;
+            max-width: 480px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.7rem;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            background: rgba(15, 23, 42, 0.9);
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        footer {
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280;
+            border-top: 1px solid rgba(148, 163, 184, 0.3);
+            background: #020617;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">Personal Portfolio</div>
+        <nav>
+            <a href="#hero">Home</a>
+            <a href="#projects">Projects</a>
+            <a href="#skills">Skills</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section id="hero">
+            <div>
+                <div class="tag">Full-Stack Developer (in progress)</div>
+                <h1>Hi, I’m <span>Simeon Mladenov</span>. I build web apps and tools.</h1>
+                <p class="subtitle">
+                    I’m a self-taught developer focused on full-stack JavaScript. I love building clean,
+                    responsive interfaces and turning ideas into real, working products.
+                </p>
+                <div class="btn-row">
+                    <button class="btn primary" onclick="scrollToSection('projects')">View Projects</button>
+                    <button class="btn" onclick="scrollToSection('contact')">Contact Me</button>
+                </div>
+                <p style="font-size: 0.85rem; color:#6b7280">
+                    Currently learning: HTML, CSS, JavaScript, React, Node.js.
+                </p>
+            </div>
+            <!-- ⭐ NEW IMAGE GOES HERE -->
+            <div style="text-align:center;">
+                <img src="Laptop with Code and Cityscape Sunset.png" alt="Laptop with code"
+                    style="width:100%; border-radius:1rem; margin-bottom:1.5rem; border:1px solid rgba(148,163,184,0.4);">
+
+                <!-- Quick Snapshot moved DOWN -->
+                <div class="card">
+                    <div class="card-title">Quick Snapshot</div>
+                    <p>- Based in: Your City</p>
+                    <p>- Focus: Full-Stack Dev (MERN)</p>
+                    <p>- Goal: Job + Freelance + SaaS</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects">
+            <h2 class="section-title">Projects</h2>
+            <p class="section-sub">Small but real projects that I’m using to level up as a developer.</p>
+            <div class="grid projects-grid">
+                <div class="card">
+                    <div class="card-title">To-Do App</div>
+                    <p>Simple productivity app with add/remove/complete tasks and local storage.</p>
+                    <a href="./todo.html" class="project-link">Live Demo (coming soon)</a>
+                </div>
+                <div class="card">
+                    <div class="card-title">Weather App</div>
+                    <p>Fetches real-time weather by city using a public API.</p>
+                    <a href="./weather.html" class="project-link">Live Demo (coming soon)</a>
+                </div>
+                <div class="card">
+                    <div class="card-title">Calculator</div>
+                    <p>Clean, responsive calculator with basic operations.</p>
+                    <a href="./calculator.html" class="project-link">Live Demo (coming soon)</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills">
+            <h2 class="section-title">Skills</h2>
+            <p class="section-sub">Technologies I’m learning and using in my projects.</p>
+            <div class="grid skills-grid">
+                <div class="card">
+                    <div class="card-title">Frontend</div>
+                    <p>HTML, CSS, JavaScript, Responsive Design, basic React.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Backend</div>
+                    <p>Node.js, Express (soon), REST APIs, JSON, basic auth concepts.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Tools</div>
+                    <p>VS Code, Git, GitHub, Chrome DevTools, Netlify/Vercel.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+            <h2 class="section-title">Contact</h2>
+            <p class="section-sub">Want to collaborate, hire me, or just say hi? Drop a message.</p>
+            <form onsubmit="handleSubmit(event)">
+                <input type="text" placeholder="Your name" required />
+                <input type="email" placeholder="Your email" required />
+                <textarea rows="4" placeholder="Your message..." required></textarea>
+                <button class="btn primary" type="submit">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        &copy; <span id="year"></span> Your Name. All rights reserved.
+    </footer>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            alert('This is a demo form. In the future, this will send an email.');
+            e.target.reset();
+        }
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

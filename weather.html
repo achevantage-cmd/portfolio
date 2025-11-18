@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Weather App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            font-family: system-ui, sans-serif;
+            color: #f9fafb;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .small {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.7rem;
+            border: 1px solid rgba(148, 163, 184, 0.8);
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        button {
+            padding: 0.6rem 0.9rem;
+            border-radius: 0.7rem;
+            border: none;
+            background: #3b82f6;
+            color: #eff6ff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result {
+            margin-top: 1rem;
+            min-height: 4rem;
+            font-size: 0.95rem;
+        }
+
+        .temp {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .city {
+            font-size: 1rem;
+            color: #e5e7eb;
+        }
+
+        .desc {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+
+        .meta {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .error {
+            color: #f97373;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Weather App</h1>
+        <div class="small">Enter a city to get current weather (via OpenWeatherMap).</div>
+
+        <form id="weather-form">
+            <input id="city-input" type="text" placeholder="e.g. London, New York" required />
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('weather-form');
+        const input = document.getElementById('city-input');
+        const result = document.getElementById('result');
+        const API_KEY = '174328716a54cc6d60a297d94d6fac19';
+
+        async function getWeather(city) {
+            try {
+                result.innerHTML = 'Loading...';
+
+                const res = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+                        city
+                    )}&appid=${API_KEY}&units=metric`
+                );
+
+                if (!res.ok) {
+                    result.innerHTML = '<div class="error">City not found. Try again.</div>';
+                    return;
+                }
+
+                const data = await res.json();
+                const temp = Math.round(data.main.temp);
+                const feels = Math.round(data.main.feels_like);
+                const desc = data.weather[0].description;
+                const humidity = data.main.humidity;
+                const wind = data.wind.speed;
+                const name = `${data.name}, ${data.sys.country}`;
+
+                result.innerHTML = `
+          <div class="temp">${temp}°C</div>
+          <div class="city">${name}</div>
+          <div class="desc">${desc}</div>
+          <div class="meta">
+            Feels like: ${feels}°C<br/>
+            Humidity: ${humidity}%<br/>
+            Wind: ${wind} m/s
+          </div>
+        `;
+            } catch (err) {
+                console.error(err);
+                result.innerHTML = '<div class="error">Something went wrong.</div>';
+            }
+        }
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const city = input.value.trim();
+            if (!city) return;
+            getWeather(city);
+        });
+    </script>
+</body>
+<a href="portfolio.html" style="position:fixed;top:10px;left:10px;font-size:0.8rem;color:#cbd5f5;text-decoration:none;">
+    ⬅ Back to Portfolio
+</a>
+
+</html>

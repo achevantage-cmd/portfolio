@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at top, #1d2440, #020617);
+            font-family: system-ui, sans-serif;
+        }
+
+        .calc {
+            background: #020617;
+            padding: 1rem;
+            border-radius: 1.2rem;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.9);
+            width: 320px;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+        }
+
+        .display {
+            background: #020617;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            text-align: right;
+            font-size: 1.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            margin-bottom: 0.75rem;
+            word-wrap: break-word;
+            min-height: 3rem;
+        }
+
+        .small-display {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+
+        button {
+            padding: 0.75rem;
+            border-radius: 0.7rem;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            background: #111827;
+            color: #e5e7eb;
+        }
+
+        button.operator {
+            color: #f97316;
+        }
+
+        button.equal {
+            background: #22c55e;
+            color: #022c22;
+            font-weight: 600;
+        }
+
+        button.clear {
+            color: #f97316;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calc">
+        <div class="small-display" id="prev"></div>
+        <div class="display" id="current">0</div>
+        <div class="grid">
+            <button class="clear" data-action="clear">C</button>
+            <button data-action="delete">⌫</button>
+            <button data-action="percent">%</button>
+            <button class="operator" data-operator="/">÷</button>
+
+            <button data-number="7">7</button>
+            <button data-number="8">8</button>
+            <button data-number="9">9</button>
+            <button class="operator" data-operator="*">×</button>
+
+            <button data-number="4">4</button>
+            <button data-number="5">5</button>
+            <button data-number="6">6</button>
+            <button class="operator" data-operator="-">−</button>
+
+            <button data-number="1">1</button>
+            <button data-number="2">2</button>
+            <button data-number="3">3</button>
+            <button class="operator" data-operator="+">+</button>
+
+            <button data-number="0" style="grid-column: span 2;">0</button>
+            <button data-number=".">.</button>
+            <button class="equal" data-action="equals">=</button>
+        </div>
+    </div>
+
+    <script>
+        const prevEl = document.getElementById('prev');
+        const currentEl = document.getElementById('current');
+
+        let current = '0';
+        let previous = '';
+        let operator = null;
+
+        function updateDisplay() {
+            currentEl.textContent = current || '0';
+            prevEl.textContent = previous && operator ? `${previous} ${operator}` : '';
+        }
+
+        function handleNumber(num) {
+            if (num === '.' && current.includes('.')) return;
+            if (current === '0' && num !== '.') current = num;
+            else current += num;
+            updateDisplay();
+        }
+
+        function chooseOperator(op) {
+            if (current === '') return;
+            if (previous !== '') compute();
+            operator = op;
+            previous = current;
+            current = '';
+            updateDisplay();
+        }
+
+        function compute() {
+            if (previous === '' || current === '' || !operator) return;
+            const a = parseFloat(previous);
+            const b = parseFloat(current);
+            if (isNaN(a) || isNaN(b)) return;
+            let result;
+            switch (operator) {
+                case '+': result = a + b; break;
+                case '-': result = a - b; break;
+                case '*': result = a * b; break;
+                case '/': result = b === 0 ? 'Error' : a / b; break;
+                default: return;
+            }
+            current = String(result);
+            previous = '';
+            operator = null;
+            updateDisplay();
+        }
+
+        function clearAll() {
+            current = '0';
+            previous = '';
+            operator = null;
+            updateDisplay();
+        }
+
+        function del() {
+            if (current.length <= 1) current = '0';
+            else current = current.slice(0, -1);
+            updateDisplay();
+        }
+
+        function percent() {
+            const value = parseFloat(current);
+            if (isNaN(value)) return;
+            current = String(value / 100);
+            updateDisplay();
+        }
+
+        document.addEventListener('click', e => {
+            const btn = e.target;
+            const number = btn.getAttribute('data-number');
+            const op = btn.getAttribute('data-operator');
+            const action = btn.getAttribute('data-action');
+
+            if (number !== null) handleNumber(number);
+            if (op) chooseOperator(op);
+            if (action === 'equals') compute();
+            if (action === 'clear') clearAll();
+            if (action === 'delete') del();
+            if (action === 'percent') percent();
+        });
+
+        updateDisplay();
+    </script>
+</body>
+<a href="portfolio.html" style="position:fixed;top:10px;left:10px;font-size:0.8rem;color:#cbd5f5;text-decoration:none;">
+    ⬅ Back to Portfolio
+</a>
+
+</html>
