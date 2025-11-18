@@ -109,48 +109,56 @@
 </head>
 
 <body>
-    <div class="card">
-        <h1>Weather App</h1>
-        <div class="small">Enter a city to get current weather (via OpenWeatherMap).</div>
 
-        <form id="weather-form">
-            <input id="city-input" type="text" placeholder="e.g. London, New York" required />
-            <button type="submit">Search</button>
-        </form>
+    <body>
+        <a href="/"
+            style="position:fixed;top:10px;left:10px;font-size:0.8rem;color:#cbd5f5;text-decoration:none;z-index:9999;">
+            ⬅ Back to Portfolio
+        </a>
+        <!-- rest of your page... -->
 
-        <div class="result" id="result"></div>
-    </div>
+        <div class="card">
+            <h1>Weather App</h1>
+            <div class="small">Enter a city to get current weather (via OpenWeatherMap).</div>
 
-    <script>
-        const form = document.getElementById('weather-form');
-        const input = document.getElementById('city-input');
-        const result = document.getElementById('result');
-        const API_KEY = '174328716a54cc6d60a297d94d6fac19';
+            <form id="weather-form">
+                <input id="city-input" type="text" placeholder="e.g. London, New York" required />
+                <button type="submit">Search</button>
+            </form>
 
-        async function getWeather(city) {
-            try {
-                result.innerHTML = 'Loading...';
+            <div class="result" id="result"></div>
+        </div>
 
-                const res = await fetch(
-                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-                        city
-                    )}&appid=${API_KEY}&units=metric`
-                );
+        <script>
+            const form = document.getElementById('weather-form');
+            const input = document.getElementById('city-input');
+            const result = document.getElementById('result');
+            const API_KEY = '174328716a54cc6d60a297d94d6fac19';
 
-                if (!res.ok) {
-                    result.innerHTML = '<div class="error">City not found. Try again.</div>';
-                    return;
-                }
+            async function getWeather(city) {
+                try {
+                    result.innerHTML = 'Loading...';
 
-                const data = await res.json();
-                const temp = Math.round(data.main.temp);
-                const feels = Math.round(data.main.feels_like);
-                const desc = data.weather[0].description;
-                const humidity = data.main.humidity;
-                const wind = data.wind.speed;
-                const name = `${data.name}, ${data.sys.country}`;
+                    const res = await fetch(
+                        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+                            city
+                        )}&appid=${API_KEY}&units=metric`
+                    );
 
-                result.innerHTML = `
+                    if (!res.ok) {
+                        result.innerHTML = '<div class="error">City not found. Try again.</div>';
+                        return;
+                    }
+
+                    const data = await res.json();
+                    const temp = Math.round(data.main.temp);
+                    const feels = Math.round(data.main.feels_like);
+                    const desc = data.weather[0].description;
+                    const humidity = data.main.humidity;
+                    const wind = data.wind.speed;
+                    const name = `${data.name}, ${data.sys.country}`;
+
+                    result.innerHTML = `
           <div class="temp">${temp}°C</div>
           <div class="city">${name}</div>
           <div class="desc">${desc}</div>
@@ -160,22 +168,21 @@
             Wind: ${wind} m/s
           </div>
         `;
-            } catch (err) {
-                console.error(err);
-                result.innerHTML = '<div class="error">Something went wrong.</div>';
+                } catch (err) {
+                    console.error(err);
+                    result.innerHTML = '<div class="error">Something went wrong.</div>';
+                }
             }
-        }
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const city = input.value.trim();
-            if (!city) return;
-            getWeather(city);
-        });
-    </script>
-</body>
-<a href="index.html" style="position:fixed;top:10px;left:10px;font-size:0.8rem;color:#cbd5f5;text-decoration:none;">
-    ⬅ Back to Portfolio
-</a>
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const city = input.value.trim();
+                if (!city) return;
+                getWeather(city);
+            });
+        </script>
+    </body>
+
+    </a>
 
 </html>
