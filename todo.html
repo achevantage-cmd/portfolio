@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>To-Do App</title>
+    <title>To-Do App – Advanced</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
         * {
@@ -21,9 +21,19 @@
             padding: 2rem 1rem;
         }
 
+        a.back-link {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: #cbd5f5;
+            text-decoration: none;
+            z-index: 9999;
+        }
+
         .app {
             width: 100%;
-            max-width: 420px;
+            max-width: 520px;
             background: #020617;
             border-radius: 1rem;
             padding: 1.5rem;
@@ -32,8 +42,8 @@
         }
 
         h1 {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
         }
 
         .small {
@@ -42,15 +52,15 @@
             margin-bottom: 1rem;
         }
 
+        /* Form layout */
         form {
             display: grid;
-            grid-template-columns: 1fr 130px 150px 80px;
+            grid-template-columns: 1.4fr 0.9fr 1fr 0.7fr;
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
 
-        select,
-        input[type="date"] {
+        #todo-input {
             padding: 0.6rem 0.8rem;
             border-radius: 0.7rem;
             border: 1px solid rgba(148, 163, 184, 0.8);
@@ -59,15 +69,14 @@
             font-size: 0.9rem;
         }
 
-
-        input {
-            flex: 1;
-            padding: 0.6rem 0.8rem;
+        select,
+        input[type="date"] {
+            padding: 0.6rem 0.6rem;
             border-radius: 0.7rem;
             border: 1px solid rgba(148, 163, 184, 0.8);
             background: #020617;
             color: #e5e7eb;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         button {
@@ -93,21 +102,27 @@
 
         li {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             padding: 0.5rem 0.4rem;
             border-bottom: 1px solid rgba(31, 41, 55, 0.8);
             font-size: 0.9rem;
+            gap: 0.5rem;
         }
 
         .task-text {
-            flex: 1;
-            margin: 0 0.5rem;
+            display: block;
+            margin-bottom: 0.15rem;
         }
 
         .task-text.completed {
             text-decoration: line-through;
             color: #6b7280;
+        }
+
+        .task-meta {
+            font-size: 0.75rem;
+            color: #9ca3af;
         }
 
         .icon-btn {
@@ -116,6 +131,7 @@
             cursor: pointer;
             font-size: 0.85rem;
             color: #9ca3af;
+            padding: 0.2rem 0.3rem;
         }
 
         .icon-btn:hover {
@@ -125,9 +141,18 @@
         .filters {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-top: 0.75rem;
             font-size: 0.8rem;
             color: #9ca3af;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
         }
 
         .filter-btn {
@@ -136,6 +161,8 @@
             color: inherit;
             cursor: pointer;
             font-size: 0.78rem;
+            padding: 0.15rem 0.3rem;
+            border-radius: 999px;
         }
 
         .filter-btn.active {
@@ -151,16 +178,13 @@
 </head>
 
 <body>
-
-    <a href="/"
-        style="position:fixed;top:10px;left:10px;font-size:0.8rem;color:#cbd5f5;text-decoration:none;z-index:9999;">
-        ⬅ Back to Portfolio
-    </a>
-    <!-- rest of your page... -->
+    <a href="/" class="back-link">⬅ Back to Portfolio</a>
 
     <div class="app">
         <h1>To-Do</h1>
-        <div class="small">Simple task manager with local storage.</div>
+        <div class="small">
+            Advanced task manager with categories, due dates, filters and local storage.
+        </div>
 
         <form id="todo-form">
             <input id="todo-input" type="text" placeholder="Add a new task..." required />
@@ -176,34 +200,26 @@
             <button type="submit">Add</button>
         </form>
 
-
         <ul id="todo-list"></ul>
+
+        <!-- Status filters + count -->
         <div class="filters">
             <span id="task-count"></span>
-            <div>
+            <div class="filter-group" id="status-filters">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="active">Active</button>
                 <button class="filter-btn" data-filter="completed">Done</button>
             </div>
         </div>
 
-        <!-- NEW CATEGORY FILTER -->
-        <div class="filters" style="margin-top:10px;">
-            <div>
-                <button class="filter-btn" data-category="all">All Categories</button>
+        <!-- Category filters -->
+        <div class="filters" style="margin-top: 0.5rem;">
+            <span>Filter by category:</span>
+            <div class="filter-group" id="category-filters">
+                <button class="filter-btn active-category" data-category="all">All</button>
                 <button class="filter-btn" data-category="Work">Work</button>
                 <button class="filter-btn" data-category="Personal">Personal</button>
                 <button class="filter-btn" data-category="Study">Study</button>
-            </div>
-        </div>
-
-
-        <div class="filters">
-            <span id="task-count"></span>
-            <div>
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="active">Active</button>
-                <button class="filter-btn" data-filter="completed">Done</button>
             </div>
         </div>
     </div>
@@ -211,37 +227,40 @@
     <script>
         const form = document.getElementById('todo-form');
         const input = document.getElementById('todo-input');
+        const categoryInput = document.getElementById('todo-category');
+        const dateInput = document.getElementById('todo-date');
         const list = document.getElementById('todo-list');
         const countSpan = document.getElementById('task-count');
-        const filterButtons = document.querySelectorAll('.filter-btn');
+        const statusFilterButtons = document.querySelectorAll('#status-filters .filter-btn');
+        const categoryFilterButtons = document.querySelectorAll('#category-filters .filter-btn');
 
-        let todos = JSON.parse(localStorage.getItem('todos-beginner')) || [];
-        let filter = 'all';
+        // Use same key as before so old tasks are preserved
+        const STORAGE_KEY = 'todos-beginner';
+
+        let todos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let statusFilter = 'all';   // 'all' | 'active' | 'completed'
+        let categoryFilter = 'all'; // 'all' | 'Work' | 'Personal' | 'Study'
 
         function save() {
-            localStorage.setItem('todos-beginner', JSON.stringify(todos));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
         }
 
         function render() {
-            let categoryFilter = document.querySelector('.filter-btn.active-category')?.dataset.category || 'all';
+            list.innerHTML = '';
 
+            let filtered = todos.slice();
+
+            // Apply status filter
+            filtered = filtered.filter(t => {
+                if (statusFilter === 'active') return !t.completed;
+                if (statusFilter === 'completed') return t.completed;
+                return true; // all
+            });
+
+            // Apply category filter
             filtered = filtered.filter(t => {
                 if (categoryFilter === 'all') return true;
-                return t.category === categoryFilter;
-            });
-            document.querySelectorAll('[data-category]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active-category'));
-                    btn.classList.add('active-category');
-                    render();
-                });
-            });
-
-            list.innerHTML = '';
-            let filtered = todos.filter(t => {
-                if (filter === 'active') return !t.completed;
-                if (filter === 'completed') return t.completed;
-                return true;
+                return (t.category || 'General') === categoryFilter;
             });
 
             filtered.forEach(todo => {
@@ -252,24 +271,28 @@
                 checkbox.checked = todo.completed;
                 checkbox.addEventListener('change', () => toggle(todo.id));
 
+                const textWrapper = document.createElement('div');
+                textWrapper.style.flex = '1';
+
                 const span = document.createElement('span');
-                span.textContent = todo.text + " ";
+                span.textContent = todo.text;
                 span.className = 'task-text' + (todo.completed ? ' completed' : '');
 
                 const meta = document.createElement('div');
-                meta.style.fontSize = '0.75rem';
-                meta.style.color = '#9ca3af';
-                meta.textContent = `${todo.category} • Due: ${todo.date || 'No date'}`;
+                meta.className = 'task-meta';
+
+                const cat = todo.category || 'General';
+                const date = todo.date || 'No date';
+
+                meta.textContent = `${cat} • Due: ${date}`;
+
+                textWrapper.appendChild(span);
+                textWrapper.appendChild(meta);
 
                 const del = document.createElement('button');
                 del.textContent = '✕';
                 del.className = 'icon-btn';
                 del.addEventListener('click', () => remove(todo.id));
-
-                const textWrapper = document.createElement('div');
-                textWrapper.style.flex = '1';
-                textWrapper.appendChild(span);
-                textWrapper.appendChild(meta);
 
                 li.appendChild(checkbox);
                 li.appendChild(textWrapper);
@@ -294,9 +317,10 @@
             render();
         }
 
-
         function toggle(id) {
-            todos = todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+            todos = todos.map(t =>
+                t.id === id ? { ...t, completed: !t.completed } : t
+            );
             save();
             render();
         }
@@ -311,32 +335,41 @@
             e.preventDefault();
 
             const text = input.value.trim();
-            const category = document.getElementById('todo-category').value;
-            const date = document.getElementById('todo-date').value;
+            const category = categoryInput.value;
+            const date = dateInput.value;
 
             if (!text) return;
 
             add(text, category, date);
 
             input.value = '';
-            document.getElementById('todo-date').value = '';
+            dateInput.value = '';
             input.focus();
         });
 
-
-        filterButtons.forEach(btn => {
+        // Status filter buttons
+        statusFilterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
-                filterButtons.forEach(b => b.classList.remove('active'));
+                statusFilterButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                filter = btn.dataset.filter;
+                statusFilter = btn.dataset.filter;
                 render();
             });
         });
 
+        // Category filter buttons
+        categoryFilterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryFilterButtons.forEach(b => b.classList.remove('active-category'));
+                btn.classList.add('active-category');
+                categoryFilter = btn.dataset.category;
+                render();
+            });
+        });
+
+        // Initial render
         render();
     </script>
 </body>
-
-</a>
 
 </html>
