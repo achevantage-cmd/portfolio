@@ -43,10 +43,22 @@
         }
 
         form {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 130px 150px 80px;
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
+
+        select,
+        input[type="date"] {
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.7rem;
+            border: 1px solid rgba(148, 163, 184, 0.8);
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+        }
+
 
         input {
             flex: 1;
@@ -130,6 +142,11 @@
             color: #e5e7eb;
             text-decoration: underline;
         }
+
+        .filter-btn.active-category {
+            color: #a5b4fc;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -147,10 +164,39 @@
 
         <form id="todo-form">
             <input id="todo-input" type="text" placeholder="Add a new task..." required />
+
+            <select id="todo-category">
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Study">Study</option>
+            </select>
+
+            <input id="todo-date" type="date" />
+
             <button type="submit">Add</button>
         </form>
 
+
         <ul id="todo-list"></ul>
+        <div class="filters">
+            <span id="task-count"></span>
+            <div>
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Done</button>
+            </div>
+        </div>
+
+        <!-- NEW CATEGORY FILTER -->
+        <div class="filters" style="margin-top:10px;">
+            <div>
+                <button class="filter-btn" data-category="all">All Categories</button>
+                <button class="filter-btn" data-category="Work">Work</button>
+                <button class="filter-btn" data-category="Personal">Personal</button>
+                <button class="filter-btn" data-category="Study">Study</button>
+            </div>
+        </div>
+
 
         <div class="filters">
             <span id="task-count"></span>
@@ -177,6 +223,20 @@
         }
 
         function render() {
+            let categoryFilter = document.querySelector('.filter-btn.active-category')?.dataset.category || 'all';
+
+            filtered = filtered.filter(t => {
+                if (categoryFilter === 'all') return true;
+                return t.category === categoryFilter;
+            });
+            document.querySelectorAll('[data-category]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active-category'));
+                    btn.classList.add('active-category');
+                    render();
+                });
+            });
+
             list.innerHTML = '';
             let filtered = todos.filter(t => {
                 if (filter === 'active') return !t.completed;
@@ -193,17 +253,28 @@
                 checkbox.addEventListener('change', () => toggle(todo.id));
 
                 const span = document.createElement('span');
-                span.textContent = todo.text;
+                span.textContent = todo.text + " ";
                 span.className = 'task-text' + (todo.completed ? ' completed' : '');
+
+                const meta = document.createElement('div');
+                meta.style.fontSize = '0.75rem';
+                meta.style.color = '#9ca3af';
+                meta.textContent = `${todo.category} • Due: ${todo.date || 'No date'}`;
 
                 const del = document.createElement('button');
                 del.textContent = '✕';
                 del.className = 'icon-btn';
                 del.addEventListener('click', () => remove(todo.id));
 
+                const textWrapper = document.createElement('div');
+                textWrapper.style.flex = '1';
+                textWrapper.appendChild(span);
+                textWrapper.appendChild(meta);
+
                 li.appendChild(checkbox);
-                li.appendChild(span);
+                li.appendChild(textWrapper);
                 li.appendChild(del);
+
                 list.appendChild(li);
             });
 
@@ -211,15 +282,18 @@
             countSpan.textContent = activeCount + ' task(s) left';
         }
 
-        function add(text) {
+        function add(text, category, date) {
             todos.push({
                 id: Date.now(),
                 text,
+                category,
+                date,
                 completed: false,
             });
             save();
             render();
         }
+
 
         function toggle(id) {
             todos = todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
@@ -235,12 +309,20 @@
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-            const value = input.value.trim();
-            if (!value) return;
-            add(value);
+
+            const text = input.value.trim();
+            const category = document.getElementById('todo-category').value;
+            const date = document.getElementById('todo-date').value;
+
+            if (!text) return;
+
+            add(text, category, date);
+
             input.value = '';
+            document.getElementById('todo-date').value = '';
             input.focus();
         });
+
 
         filterButtons.forEach(btn => {
             btn.addEventListener('click', () => {
