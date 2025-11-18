@@ -19,6 +19,17 @@
             background: linear-gradient(135deg, #0f172a, #1e293b);
             font-family: system-ui, sans-serif;
             color: #f9fafb;
+            padding: 1rem;
+        }
+
+        .back {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: #cbd5f5;
+            text-decoration: none;
+            z-index: 9999;
         }
 
         .card {
@@ -34,12 +45,14 @@
         h1 {
             font-size: 1.4rem;
             margin-bottom: 0.5rem;
+            text-align: center;
         }
 
         .small {
             font-size: 0.8rem;
             color: #9ca3af;
             margin-bottom: 1rem;
+            text-align: center;
         }
 
         form {
@@ -73,14 +86,22 @@
             opacity: 0.9;
         }
 
+        #unit-toggle {
+            margin: 0.5rem auto;
+            display: block;
+            background: #334155;
+            color: #f8fafc;
+        }
+
         .result {
             margin-top: 1rem;
             min-height: 4rem;
             font-size: 0.95rem;
+            text-align: center;
         }
 
         .temp {
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             font-weight: 600;
             margin-bottom: 0.2rem;
         }
@@ -93,6 +114,7 @@
         .desc {
             font-size: 0.9rem;
             color: #9ca3af;
+            text-transform: capitalize;
         }
 
         .meta {
@@ -110,79 +132,104 @@
 
 <body>
 
-    <body>
-        <a href="/"
-            style="position:fixed;top:10px;left:10px;font-size:0.8rem;color:#cbd5f5;text-decoration:none;z-index:9999;">
-            ⬅ Back to Portfolio
-        </a>
-        <!-- rest of your page... -->
+    <a class="back" href="/">⬅ Back to Portfolio</a>
 
-        <div class="card">
-            <h1>Weather App</h1>
-            <div class="small">Enter a city to get current weather (via OpenWeatherMap).</div>
+    <div class="card">
+        <h1>Weather App</h1>
+        <div class="small">Enter a city to get current weather (with °C / °F toggle).</div>
 
-            <form id="weather-form">
-                <input id="city-input" type="text" placeholder="e.g. London, New York" required />
-                <button type="submit">Search</button>
-            </form>
+        <form id="weather-form">
+            <input id="city-input" type="text" placeholder="e.g. London, New York" required />
+            <button type="submit">Search</button>
+        </form>
 
-            <div class="result" id="result"></div>
-        </div>
+        <button id="unit-toggle">Switch to °F</button>
 
-        <script>
-            const form = document.getElementById('weather-form');
-            const input = document.getElementById('city-input');
-            const result = document.getElementById('result');
-            const API_KEY = '174328716a54cc6d60a297d94d6fac19';
+        <div class="result" id="result"></div>
+    </div>
 
-            async function getWeather(city) {
-                try {
-                    result.innerHTML = 'Loading...';
+    <script>
+        const form = document.getElementById("weather-form");
+        const input = document.getElementById("city-input");
+        const result = document.getElementById("result");
+        const unitToggle = document.getElementById("unit-toggle");
 
-                    const res = await fetch(
-                        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-                            city
-                        )}&appid=${API_KEY}&units=metric`
-                    );
+        const API_KEY = "174328716a54cc6d60a297d94d6fac19";  /* <-- ADD YOUR API KEY HERE */
 
-                    if (!res.ok) {
-                        result.innerHTML = '<div class="error">City not found. Try again.</div>';
-                        return;
-                    }
+        let currentUnit = "C"; // Current display unit
+        let lastWeatherData = null; // Store last API data
 
-                    const data = await res.json();
-                    const temp = Math.round(data.main.temp);
-                    const feels = Math.round(data.main.feels_like);
-                    const desc = data.weather[0].description;
-                    const humidity = data.main.humidity;
-                    const wind = data.wind.speed;
-                    const name = `${data.name}, ${data.sys.country}`;
+        function displayWeather(data) {
+            lastWeatherData = data;
 
-                    result.innerHTML = `
-          <div class="temp">${temp}°C</div>
-          <div class="city">${name}</div>
-          <div class="desc">${desc}</div>
-          <div class="meta">
-            Feels like: ${feels}°C<br/>
-            Humidity: ${humidity}%<br/>
-            Wind: ${wind} m/s
-          </div>
-        `;
-                } catch (err) {
-                    console.error(err);
-                    result.innerHTML = '<div class="error">Something went wrong.</div>';
-                }
+            let temp = data.main.temp;
+            let feels = data.main.feels_like;
+
+            if (currentUnit === "F") {
+                temp = (temp * 9 / 5) + 32;
+                feels = (feels * 9 / 5) + 32;
             }
 
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-                const city = input.value.trim();
-                if (!city) return;
-                getWeather(city);
-            });
-        </script>
-    </body>
+            temp = Math.round(temp);
+            feels = Math.round(feels);
 
-    </a>
+            const name = `${data.name}, ${data.sys.country}`;
+            const desc = data.weather[0].description;
+            const humidity = data.main.humidity;
+            const wind = data.wind.speed;
+
+            result.innerHTML = `
+        <div class="temp">${temp}°${currentUnit}</div>
+        <div class="city">${name}</div>
+        <div class="desc">${desc}</div>
+        <div class="meta">
+          Feels like: ${feels}°${currentUnit}<br/>
+          Humidity: ${humidity}%<br/>
+          Wind: ${wind} m/s
+        </div>
+      `;
+        }
+
+        async function getWeather(city) {
+            try {
+                result.innerHTML = "Loading...";
+
+                const res = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+                        city
+                    )}&appid=${API_KEY}&units=metric`
+                );
+
+                if (!res.ok) {
+                    result.innerHTML = '<div class="error">City not found. Try again.</div>';
+                    return;
+                }
+
+                const data = await res.json();
+                displayWeather(data);
+
+            } catch (err) {
+                result.innerHTML = '<div class="error">Something went wrong.</div>';
+            }
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const city = input.value.trim();
+            if (!city) return;
+            getWeather(city);
+        });
+
+        unitToggle.addEventListener("click", () => {
+            currentUnit = currentUnit === "C" ? "F" : "C";
+            unitToggle.textContent =
+                currentUnit === "C" ? "Switch to °F" : "Switch to °C";
+
+            if (lastWeatherData) {
+                displayWeather(lastWeatherData);
+            }
+        });
+    </script>
+</body>
 
 </html>
