@@ -55,10 +55,17 @@
         /* Form layout */
         form {
             display: grid;
-            grid-template-columns: 1.4fr 0.9fr 1fr 0.7fr;
+            grid-template-columns: 1fr;
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
+
+        @media (min-width: 600px) {
+            form {
+                grid-template-columns: 1.4fr 0.9fr 1fr 0.7fr;
+            }
+        }
+
 
         #todo-input {
             padding: 0.6rem 0.8rem;
@@ -80,7 +87,8 @@
         }
 
         button {
-            padding: 0.6rem 0.9rem;
+            padding: 0.5rem 0.9rem;
+            /* slightly smaller vertically */
             border-radius: 0.7rem;
             border: none;
             background: #22c55e;
@@ -88,7 +96,9 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 0.85rem;
+            white-space: nowrap;
         }
+
 
         button:hover {
             opacity: 0.9;
